@@ -34,12 +34,11 @@ set_pif_file_path() {
 }
 
 check_network_reachable() {
-    attempt_count=0
     max_attempts=8
     success_pinged_series=0
 
-    while [ $attempt_count -lt $max_attempts ]; do
-        if ping -c1 -W5 "connectivitycheck.gstatic.com" > /dev/null 2>&1; then
+    for attempt_count in $(seq 1 $max_attempts); do
+        if ping -c1 -W3 "connectivitycheck.gstatic.com" > /dev/null 2>&1; then
             success_pinged_series=$((success_pinged_series + 1))
             if [ $success_pinged_series -ge 3 ]; then
                 log "Network is reachable."
@@ -48,7 +47,11 @@ check_network_reachable() {
         else
             success_pinged_series=0
         fi
-        attempt_count=$((attempt_count + 1))
+
+        if [ $attempt_count -ge 6 ] && [ $success_pinged_series -eq 0 ]; then
+            break # Early exit after 6 attempts with 0 successes
+        fi
+
         sleep 0.5
     done
 
