@@ -67,7 +67,7 @@ update_pif_if_needed() {
 
     if grep -q '"FINGERPRINT": "null"' "$remote_pif_file_path" 2>/dev/null; then
         log "Remote PIF file is bad, skip replace local PIF."
-        return 1
+        return 0
     fi
 
     example_pif_file_path="/data/adb/modules/playintegrityfix/example.pif.json"
@@ -142,9 +142,10 @@ set_pif_file_path
 while true; do
     log "" # Separator in log
     log "Start new check."
+    check_status="skipped"
     if check_network_reachable; then
-        update_pif_if_needed
-        log "Check completed. Next check: $(date -d "@$(($(date +%s) + ($time_interval * 60)))" "+%Y-%m-%d_%H:%M:%S")"
+        update_pif_if_needed && check_status="completed"
     fi
+    log "Check ${check_status}. Next check: $(date -d "@$(($(date +%s) + ($time_interval * 60)))" "+%Y-%m-%d_%H:%M:%S")"
     sleep "${time_interval}m"
 done
