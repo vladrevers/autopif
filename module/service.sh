@@ -38,7 +38,7 @@ check_network_reachable() {
     success_pinged_series=0
 
     for attempt_count in $(seq 1 $max_attempts); do
-        if ping -c1 -W3 "connectivitycheck.gstatic.com" > /dev/null 2>&1; then
+        if /system/bin/ping -c1 -W3 "connectivitycheck.gstatic.com" > /dev/null 2>&1; then
             success_pinged_series=$((success_pinged_series + 1))
             if [ $success_pinged_series -ge 3 ]; then
                 log "Network is reachable."
@@ -130,6 +130,8 @@ if ! [ -d "/data/adb/modules/playintegrityfix" ]; then
     log "Script is terminating due to the missing module"
     exit 1
 fi
+
+sleep 10 # Wait for the network connection after reboot
 
 # Get check interval from file with validation
 time_interval=$(cat "$MODPATH/minutes.txt" 2>/dev/null)
