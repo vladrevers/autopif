@@ -1,8 +1,8 @@
 # autopif
 
-English | [Українська](./README_UK.md) | [Русский](./README_RU.md)
+**English** | [Українська](./README_UK.md) | [Русский](./README_RU.md)
 
-Lightweight fork of [daboynb/playcurl](https://github.com/daboynb/PlayIntegrityNEXT/tree/main/playcurl) that performs a single task: Every 25 minutes, it downloads the [autojson/pif.json](https://github.com/daboynb/autojson/blob/main/pif.json) file and compares your current `custom.pif.json` or `pif.json` file with the downloaded version. If your file differs or is missing, it replaces it, stops the GMS/Wallet services, and clears their cache. If the files are identical or an error occurs (e.g., no internet connection or failed to download the file), it does nothing in that iteration/attempt. It is intended to be used with (in my preference) the [osm0sis/PlayIntegrityFork](https://github.com/osm0sis/PlayIntegrityFork) module, or alternatively with [chiteroman/PlayIntegrityFix](https://github.com/chiteroman/PlayIntegrityFix).
+Lightweight fork of [daboynb/playcurl](https://github.com/daboynb/PlayIntegrityNEXT/tree/main/playcurl) that performs a single task: Every 25 minutes, it downloads the [autojson/pif.json](https://github.com/daboynb/autojson/blob/main/pif.json) file and compares your current `custom.pif.json` or `pif.json` file with the downloaded version. If your file differs or is missing, it replaces it, stops the GMS/Wallet services, and clears their cache. If the files are identical or an error occurs (e.g., no internet connection or failed to download the file), it does nothing in that iteration (attempt). It is intended to be used with (in my preference) the [osm0sis/PlayIntegrityFork](https://github.com/osm0sis/PlayIntegrityFork) module, or alternatively with [chiteroman/PlayIntegrityFix](https://github.com/chiteroman/PlayIntegrityFix).
 
 The 25-minute interval can be changed, please see the [Preferences](#preferences) and [Notes](#notes) sections.
 
