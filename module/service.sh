@@ -80,6 +80,13 @@ update_pif_if_needed() {
         log "Delete example.pif.json"
     fi
 
+    migrate_script_path="$PIF_MODULE_DIR/migrate.sh"
+    if [ -f "$migrate_script_path" ]; then
+        log "Running existing migrate.sh to adapt remote PIF"
+        sh "$migrate_script_path" "$remote_pif_file_path" "$remote_pif_file_path" > /dev/null 2>&1
+        rm "${remote_pif_file_path}.bak" 2>/dev/null
+    fi
+
     if diff "$remote_pif_file_path" "$PIF_FILE_PATH" > /dev/null 2>&1; then
         log "The current and remote PIF are the same."
     else
