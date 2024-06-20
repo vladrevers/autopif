@@ -1,5 +1,6 @@
 MODPATH="${0%/*}"
 PIF_FILE_PATH=""
+PIF_MODULE_DIR="/data/adb/modules/playintegrityfix"
 
 log() {
     log_file_path="/storage/emulated/0/autopif_log.txt"
@@ -14,8 +15,8 @@ log() {
 
 set_pif_file_path() {
     chiteroman_pif_file_path="/data/adb/pif.json"
-    osm0sis_pif_file_path="/data/adb/modules/playintegrityfix/custom.pif.json"
-    module_prop_path="/data/adb/modules/playintegrityfix/module.prop"
+    osm0sis_pif_file_path="$PIF_MODULE_DIR/custom.pif.json"
+    module_prop_path="$PIF_MODULE_DIR/module.prop"
 
     if grep -q 'author=osm0sis' "$module_prop_path" 2>/dev/null; then
         PIF_FILE_PATH="$osm0sis_pif_file_path"
@@ -73,7 +74,7 @@ update_pif_if_needed() {
         return 0
     fi
 
-    example_pif_file_path="/data/adb/modules/playintegrityfix/example.pif.json"
+    example_pif_file_path="$PIF_MODULE_DIR/example.pif.json"
     if [ -e "$example_pif_file_path" ]; then
         rm "$example_pif_file_path"
         log "Delete example.pif.json"
@@ -125,7 +126,7 @@ until [ -d "/storage/emulated/0/Android" ] || [ "$i" -ge 180 ]; do
     i=$((i + check_boot_interval))
 done
 
-if ! [ -d "/data/adb/modules/playintegrityfix" ]; then
+if ! [ -d "$PIF_MODULE_DIR" ]; then
     log "You need to install Play Integrity Fix (or Fork) module!"
     log "Script is terminating due to the missing module"
     exit 1
