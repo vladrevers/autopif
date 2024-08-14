@@ -11,9 +11,5 @@ if echo "$new_module_dir" | grep -q "modules_update"; then
         if [ ! -f "$old_module_dir/log_file_on" ]; then
             rm -f "$new_module_dir/log_file_on"
         fi
-
-        if [ -f "$old_module_dir/log_console_on" ]; then
-            touch "$new_module_dir/log_console_on"
-        fi
     fi
 fi
