@@ -20,7 +20,16 @@ Within the installed autopif module directory (`/data/adb/modules/autopif`) or i
 
 - `minutes.txt` (contains only an integer value, specifying the interval in minutes for checking updates, default is 25)
 - `log_file_on` (if this file exists, a log will be written to `/storage/emulated/0/autopif_log.txt`. Present by default, remove this file if you don't need logging)
-- `log_console_on` (if this file exists, the log will be printed to the console, useful for monitoring progress when manually running in busybox ash. Not present by default, mainly added for testing during development)
+
+## Manual Execution
+
+You can perform a one-time check manually using the following command in a terminal:
+
+```shell
+cd /data/adb && ./magisk/busybox ash ./modules/autopif/service.sh -o
+```
+
+This command will run the script once, outputting the results to the console. It's useful for quick updating of the current PIF file and for debugging purposes.
 
 ## Notes
 

@@ -1,15 +1,17 @@
 MODPATH="${0%/*}"
 PIF_FILE_PATH=""
 PIF_MODULE_DIR="/data/adb/modules/playintegrityfix"
+[ "$1" = "-o" ] && ONCE_MODE=1
 
 log() {
+    if [ $ONCE_MODE ]; then
+        echo "$1"
+        return 0
+    fi
+
     log_file_path="/storage/emulated/0/autopif_log.txt"
     if [ -f "$MODPATH/log_file_on" ] && touch "$log_file_path" 2>/dev/null; then
         echo "$(date "+%Y-%m-%d_%H:%M:%S"): $1" >> "$log_file_path"
-    fi
-
-    if [ -f "$MODPATH/log_console_on" ]; then
-        echo "$1"
     fi
 }
 
@@ -32,6 +34,14 @@ set_pif_file_path() {
     fi
 
     log "Path to PIF file: $PIF_FILE_PATH"
+}
+
+check_pif_module_installed() {
+    if ! [ -d "$PIF_MODULE_DIR" ]; then
+        log "You need to install Play Integrity Fix (or Fork) module!"
+        log "Script is terminating due to the missing module"
+        exit 1
+    fi
 }
 
 check_network_reachable() {
@@ -120,6 +130,21 @@ handle_gms() {
     fi
 }
 
+# Check for once start mode
+if [ $ONCE_MODE ]; then
+    check_pif_module_installed
+    set_pif_file_path
+
+    log "Start a once check."
+    check_status="is skipped"
+    if check_network_reachable; then
+        update_pif_if_needed && check_status="completed"
+    fi
+    log "Once check ${check_status}"
+
+    exit 0
+fi
+
 # Wait for system to boot
 check_boot_interval=3
 until [ "$(getprop sys.boot_completed)" = "1" ]; do
@@ -133,11 +158,7 @@ until [ -d "/storage/emulated/0/Android" ] || [ "$i" -ge 180 ]; do
     i=$((i + check_boot_interval))
 done
 
-if ! [ -d "$PIF_MODULE_DIR" ]; then
-    log "You need to install Play Integrity Fix (or Fork) module!"
-    log "Script is terminating due to the missing module"
-    exit 1
-fi
+check_pif_module_installed
 
 sleep 10 # Wait for the network connection after reboot
 
@@ -155,7 +176,7 @@ set_pif_file_path
 while true; do
     log "" # Separator in log
     log "Start new check."
-    check_status="skipped"
+    check_status="is skipped"
     if check_network_reachable; then
         update_pif_if_needed && check_status="completed"
     fi
