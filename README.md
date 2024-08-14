@@ -20,6 +20,7 @@ Within the installed autopif module directory (`/data/adb/modules/autopif`) or i
 
 - `minutes.txt` (contains only an integer value, specifying the interval in minutes for checking updates, default is 25)
 - `log_file_on` (if this file exists, a log will be written to `/storage/emulated/0/autopif_log.txt`. Present by default, remove this file if you don't need logging)
+- `replace_log_file_on` (if this file exists, logs of PIF file content replacement (before/after) will be written to `/storage/emulated/0/autopif_replace_log.txt`. Not present by default, create this file if you need logging of content replacements)
 
 ## Manual Execution
 

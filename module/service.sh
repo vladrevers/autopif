@@ -15,6 +15,24 @@ log() {
     fi
 }
 
+replace_log() {
+    replace_log_file_path="/storage/emulated/0/autopif_replace_log.txt"
+    if ! ([ -f "$MODPATH/replace_log_file_on" ] && touch "$replace_log_file_path" 2>/dev/null); then
+        return 0
+    fi
+
+    echo "$(date "+%Y-%m-%d_%H:%M:%S") $PIF_FILE_PATH" >> "$replace_log_file_path"
+
+    echo "Old:" >> "$replace_log_file_path"
+    cat "$PIF_FILE_PATH" >> "$replace_log_file_path"
+
+    echo "New:" >> "$replace_log_file_path"
+    cat "$remote_pif_file_path" >> "$replace_log_file_path"
+
+    echo "" >> "$replace_log_file_path"
+    echo "" >> "$replace_log_file_path"
+}
+
 set_pif_file_path() {
     chiteroman_pif_file_path="/data/adb/pif.json"
     osm0sis_pif_file_path="$PIF_MODULE_DIR/custom.pif.json"
@@ -101,6 +119,7 @@ update_pif_if_needed() {
         log "The current and remote PIF are the same."
     else
         log "Replacing PIF with remote version."
+        replace_log
         cat "$remote_pif_file_path" > "$PIF_FILE_PATH"
         handle_gms
     fi
