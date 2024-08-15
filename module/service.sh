@@ -92,7 +92,7 @@ update_pif_if_needed() {
     remote_pif_file_path="/data/adb/remote_pif.json"
     log "Downloading remote PIF file."
 
-    if ! wget --no-check-certificate -q -O "$remote_pif_file_path" "https://raw.githubusercontent.com/daboynb/autojson/main/pif.json"; then
+    if ! wget --no-check-certificate -q -O "$remote_pif_file_path" "https://raw.githubusercontent.com/daboynb/autojson/main/chiteroman.json"; then
         log "Failed to download remote PIF file."
         return 1
     fi
