@@ -8,6 +8,10 @@ if echo "$new_module_dir" | grep -q "modules_update"; then
             cp -af "$old_module_dir/minutes.txt" "$new_module_dir/minutes.txt"
         fi
 
+        if [ -f "$old_module_dir/pif_json_url.txt" ]; then
+            cp -af "$old_module_dir/pif_json_url.txt" "$new_module_dir/pif_json_url.txt"
+        fi
+
         if [ ! -f "$old_module_dir/log_file_on" ]; then
             rm -f "$new_module_dir/log_file_on"
         fi

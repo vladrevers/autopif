@@ -19,6 +19,7 @@ The 25-minute interval can be changed, please see the [Preferences](#preferences
 Within the installed autopif module directory (`/data/adb/modules/autopif`) or inside the module's ZIP file before installation, you can find or create the following files for customization:
 
 - `minutes.txt` (contains only an integer value, specifying the interval in minutes for checking updates, default is 25)
+- `pif_json_url.txt` (allows overriding the direct link for updating the PIF JSON file. Absent by default, and the default URL is used)
 - `log_file_on` (if this file exists, a log will be written to `/storage/emulated/0/autopif_log.txt`. Present by default, remove this file if you don't need logging)
 - `replace_log_file_on` (if this file exists, logs of PIF file content replacement (before/after) will be written to `/storage/emulated/0/autopif_replace_log.txt`. Not present by default, create this file if you need logging of content replacements)
 

@@ -88,11 +88,23 @@ check_network_reachable() {
     return 1
 }
 
+get_pif_json_url() {
+    url_file="$MODPATH/pif_json_url.txt"
+    default_url="https://raw.githubusercontent.com/daboynb/autojson/main/chiteroman.json"
+    
+    if [ -f "$url_file" ] && [ -s "$url_file" ]; then
+        cat "$url_file"
+    else
+        echo "$default_url"
+    fi
+}
+
 update_pif_if_needed() {
     remote_pif_file_path="/data/adb/remote_pif.json"
-    log "Downloading remote PIF file."
+    pif_json_url=$(get_pif_json_url)
+    log "Downloading remote PIF file from $pif_json_url."
 
-    if ! wget --no-check-certificate -q -O "$remote_pif_file_path" "https://raw.githubusercontent.com/daboynb/autojson/main/chiteroman.json"; then
+    if ! wget --no-check-certificate -q -O "$remote_pif_file_path" "$pif_json_url"; then
         log "Failed to download remote PIF file."
         return 1
     fi
