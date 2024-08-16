@@ -90,7 +90,7 @@ check_network_reachable() {
 
 get_pif_json_url() {
     url_file="$MODPATH/pif_json_url.txt"
-    default_url="https://raw.githubusercontent.com/daboynb/autojson/main/chiteroman.json"
+    default_url="https://raw.githubusercontent.com/vladrevers/pifsync/main/pif.json"
     
     if [ -f "$url_file" ] && [ -s "$url_file" ]; then
         cat "$url_file"
