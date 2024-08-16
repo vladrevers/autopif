@@ -1,6 +1,6 @@
 {
-    "version": "v1.5",
-    "versionCode": 1050,
-    "zipUrl": "https://github.com/vladrevers/autopif/releases/download/v1.5/autopif_v1.5.zip",
+    "version": "v1.6",
+    "versionCode": 1060,
+    "zipUrl": "https://github.com/vladrevers/autopif/releases/download/v1.6/autopif_v1.6.zip",
     "changelog": "https://raw.githubusercontent.com/vladrevers/autopif/main/README.md"
 }
