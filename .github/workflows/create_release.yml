@@ -1,0 +1,33 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.head_commit.message, 'Version bump to ')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Get version from commit message
+      id: get_version
+      run: echo "VERSION=$(echo '${{ github.event.head_commit.message }}' | sed 's/Version bump to //')" >> $GITHUB_OUTPUT
+
+    - name: Create ZIP archive
+      run: |
+        cd module
+        zip -r ../autopif_${{ steps.get_version.outputs.VERSION }}.zip .
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        name: autopif, version ${{ steps.get_version.outputs.VERSION }}
+        files: autopif_${{ steps.get_version.outputs.VERSION }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
