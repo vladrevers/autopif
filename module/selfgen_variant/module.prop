@@ -1,0 +1,7 @@
+id=autopif
+name=AutoPIF (Self-Generating)
+version=v1.7
+versionCode=1070
+author=vlrs
+description=Self-generating pif.json solution for Play integrity fix. Lightweight fork playcurl (daboynb).
+updateJson=https://raw.githubusercontent.com/vladrevers/autopif/main/update-selfgen.json

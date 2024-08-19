@@ -18,16 +18,45 @@ jobs:
       id: get_version
       run: echo "VERSION=$(echo '${{ github.event.head_commit.message }}' | sed 's/Version bump to //')" >> $GITHUB_OUTPUT
 
-    - name: Create ZIP archive
+    - name: Create fetch variant
       run: |
-        cd module
-        zip -r ../autopif_${{ steps.get_version.outputs.VERSION }}.zip .
+        mkdir -p temp_fetch
+        cp -r module/general_part/* temp_fetch/
+        cp -r module/fetch_variant/* temp_fetch/
+        sed '/# LOAD_PIF_FUNCTION_PLACEHOLDER/{
+            r module/fetch_variant/load_pif.source.sh
+            d
+        }' module/service.base.sh > temp_fetch/service.sh
+        cd temp_fetch
+        rm -f load_pif.source.sh
+        zip -r ../autopif-fetch_${{ steps.get_version.outputs.VERSION }}.zip .
+
+    - name: Create selfgen variant
+      run: |
+        mkdir -p temp_selfgen
+        cp -r module/general_part/* temp_selfgen/
+        cp -r module/selfgen_variant/* temp_selfgen/
+        sed '/# LOAD_PIF_FUNCTION_PLACEHOLDER/{
+            r module/selfgen_variant/load_pif.source.sh
+            d
+        }' module/service.base.sh > temp_selfgen/service.sh
+        cd temp_selfgen
+        rm -f load_pif.source.sh
+        zip -r ../autopif-selfgen_${{ steps.get_version.outputs.VERSION }}.zip .
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ steps.get_version.outputs.VERSION }}
         name: autopif, version ${{ steps.get_version.outputs.VERSION }}
-        files: autopif_${{ steps.get_version.outputs.VERSION }}.zip
+        files: |
+          autopif-fetch_${{ steps.get_version.outputs.VERSION }}.zip
+          autopif-selfgen_${{ steps.get_version.outputs.VERSION }}.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Clean up
+      run: |
+        rm -rf temp_selfgen temp_fetch
+        rm -f autopif-fetch_${{ steps.get_version.outputs.VERSION }}.zip
+        rm -f autopif-selfgen_${{ steps.get_version.outputs.VERSION }}.zip

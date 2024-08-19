@@ -88,29 +88,18 @@ check_network_reachable() {
     return 1
 }
 
-get_pif_json_url() {
-    url_file="$MODPATH/pif_json_url.txt"
-    default_url="https://raw.githubusercontent.com/vladrevers/pifsync/main/pif.json"
-    
-    if [ -f "$url_file" ] && [ -s "$url_file" ]; then
-        cat "$url_file"
-    else
-        echo "$default_url"
-    fi
-}
+# LOAD_PIF_FUNCTION_PLACEHOLDER
 
 update_pif_if_needed() {
     remote_pif_file_path="/data/adb/remote_pif.json"
-    pif_json_url=$(get_pif_json_url)
-    log "Downloading remote PIF file from $pif_json_url."
 
-    if ! wget --no-check-certificate -q -O "$remote_pif_file_path" "$pif_json_url"; then
-        log "Failed to download remote PIF file."
+    if ! load_pif; then
         return 1
     fi
 
     if grep -q '"FINGERPRINT": "null"' "$remote_pif_file_path" 2>/dev/null; then
         log "Remote PIF file is bad, skip replace local PIF."
+        rm "$remote_pif_file_path"
         return 0
     fi
 
