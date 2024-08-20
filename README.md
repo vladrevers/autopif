@@ -12,13 +12,13 @@ There are two variants of this module:
 **Fetch variant**:  
 Downloads the file from [pifsync/pif.json](https://github.com/vladrevers/pifsync/blob/main/pif.json).
 - **Plus**: Uses less network data and is lighter.
-- **Minus**: New pif.json might be available with a slight delay (approximately 1± hour).
+- **Minus**: New pif.json might be available with a slight delay (approximately 10± minutes).
 
 **Selfgen variant**:  
-Generates the file on the device by downloading and extracting information from the latest XiaomiEUModule.apk from xiaomi.eu.
+Generates the file on the device by downloading and extracting information from the latest [XiaomiEUModule.apk](https://sourceforge.net/projects/xiaomi-eu-multilang-miui-roms/files/xiaomi.eu/Xiaomi.eu-app/) from xiaomi.eu.
 - **Plus**: Always has the latest pif.json available.
 - **Minus**: Uses slightly more network data and requires the aapt binary library, increasing the installed module size by 1.4MB.
-- **Additional Note**: Caches the last pif.json and apk link, so downloading and extracting information from the apk only occurs when necessary (upon update).
+- **Feature**: Caches the last pif.json and apk link, so downloading and extracting information from the apk only occurs when necessary (upon update).
 </details>
 
 The 25-minute interval can be changed, please see the [Preferences](#preferences) and [Notes](#notes) sections.
@@ -45,11 +45,11 @@ Within the installed autopif module directory (`/data/adb/modules/autopif`) or i
 You can perform a one-time check manually using the following command in a terminal:
 
 ```shell
-cd /data/adb && ./magisk/busybox ash ./modules/autopif/service.sh -o
+cd /data/adb && ./magisk/busybox ash -o standalone ./modules/autopif/service.sh -o
 ```
 
 This command will run the script once, outputting the results to the console. It's useful for quick updating of the current PIF file and for debugging purposes.
 
 ## Notes
 
-After installation, I recommend checking the `autopif_log.txt` file in your Internal Storage after 12-24 hours of habitual device usage. I've noticed that on my device, running Android 14, the script is paused by Magisk or Android itself when the screen is off for an extended period and no background tasks are running (e.g., music playback). The script resumes automatically when the screen is turned on. If you encounter a similar situation, it might make sense to decrease the check interval from 25 minutes to, for example, 20 minutes. However, 25 minutes should generally be sufficient. Conversely, if the script runs exactly on the set interval (e.g., on an older version of Android), you might want to increase the interval from 25 minutes to, for example, 45 minutes. Setting a very short interval, especially less than 10 minutes, is not highly recommended. After monitoring, you can disable logging and delete the log file. For instructions on changing the check interval and disabling logging, see the [Preferences](#preferences) section.
+After installation, I recommend checking the `autopif_log.txt` file in your Internal Storage after 12-24 hours of habitual device usage. I've noticed that on my device, running Android 14, the script is paused by Magisk or Android itself when the screen is off for an extended period and no background tasks are running (e.g., music playback). The script resumes automatically when the screen is turned on. If you encounter a similar situation, it might make sense to decrease the check interval from 25 minutes to, for example, 20 minutes. However, 25 minutes should generally be sufficient. Conversely, if the script runs exactly on the set interval (e.g., on an older version of Android), you might want to increase the interval from 25 minutes to, for example, 45 minutes. Setting a very short interval, especially less than 5 minutes, is not highly recommended. After monitoring, you can disable logging and delete the log file. For instructions on changing the check interval and disabling logging, see the [Preferences](#preferences) section.
