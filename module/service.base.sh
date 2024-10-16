@@ -162,7 +162,7 @@ if [ $ONCE_MODE ]; then
     fi
     log "Once check ${check_status}"
 
-    exit 0
+    return 0
 fi
 
 # Wait for system to boot
