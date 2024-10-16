@@ -25,7 +25,7 @@ replace_log() {
 
     echo "Old:" >> "$replace_log_file_path"
     cat "$PIF_FILE_PATH" >> "$replace_log_file_path"
-
+    echo "" >> "$replace_log_file_path"
     echo "New:" >> "$replace_log_file_path"
     cat "$remote_pif_file_path" >> "$replace_log_file_path"
 
