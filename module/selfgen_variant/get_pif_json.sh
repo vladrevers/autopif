@@ -38,7 +38,10 @@ create_json() {
   "MODEL": "$(get_value MODEL)",
   "PRODUCT": "$(get_value PRODUCT)",
   "DEVICE_INITIAL_SDK_INT": "25",
-  "SECURITY_PATCH": "$(get_value SECURITY_PATCH)"
+  "SECURITY_PATCH": "$(get_value SECURITY_PATCH)",
+  "spoofProvider": true,
+  "spoofProps": true,
+  "spoofSignature": false
 }
 EOF
 
