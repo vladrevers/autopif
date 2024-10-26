@@ -1,14 +1,11 @@
 new_module_dir="$MODPATH"
 prev_module_dir=$(echo "$new_module_dir" | sed 's/modules_update/modules/')
 
-# Move the appropriate aapt binary to the target location and set permissions
-if [ -f "$MODPATH/tmp_aapt_binaries/${ARCH}_aapt" ]; then
-    mv "$MODPATH/tmp_aapt_binaries/${ARCH}_aapt" "$MODPATH/aapt"
-    chmod +x "$MODPATH/aapt"
-    rm -rf "$MODPATH/tmp_aapt_binaries"
-else
-    abort "Current architecture ($(getprop ro.product.cpu.abi)) is not supported. Installation cannot proceed."
-fi
+# Check if the appropriate aapt binary exists, move it to the target location, set permissions, and clean up
+[ -f "$MODPATH/tmp_aapt_binaries/${ARCH}_aapt" ] || abort "Current architecture ($(getprop ro.product.cpu.abi)) is not supported. Installation cannot proceed."
+mv "$MODPATH/tmp_aapt_binaries/${ARCH}_aapt" "$MODPATH/aapt"
+chmod +x "$MODPATH/aapt"
+rm -rf "$MODPATH/tmp_aapt_binaries"
 
 # Update config with value
 update_config() {

@@ -51,28 +51,28 @@ EOF
 
 # Initialize or read the last saved link
 if [ -f "$LAST_LINK_FILE" ]; then
-    LAST_LINK=$(cat "$LAST_LINK_FILE")
+    LOCAL_LAST_LINK=$(cat "$LAST_LINK_FILE")
 else
-    LAST_LINK=""
+    LOCAL_LAST_LINK=""
 fi
 
 # Fetch the latest link from the RSS feed
-LATEST_LINK=$(fetch_rss_link)
+REMOTE_LAST_LINK=$(fetch_rss_link)
 
 # Check if RSS link fetch was successful
 if [ $? -ne 0 ]; then
     echo "Failed to fetch RSS feed. Using the last known link if available."
-    LATEST_LINK=$LAST_LINK
+    REMOTE_LAST_LINK=$LOCAL_LAST_LINK
 fi
 
 # If the link is still empty, exit with error
-if [ -z "$LATEST_LINK" ]; then
+if [ -z "$REMOTE_LAST_LINK" ]; then
     echo "No valid link found. Exiting with error."
     exit 1
 fi
 
 # If the link hasn't changed, return the last saved JSON result
-if [ "$LATEST_LINK" = "$LAST_LINK" ]; then
+if [ "$REMOTE_LAST_LINK" = "$LOCAL_LAST_LINK" ]; then
     if [ -f "$LAST_JSON_FILE" ]; then
         cat "$LAST_JSON_FILE"
         exit 0
@@ -80,7 +80,7 @@ if [ "$LATEST_LINK" = "$LAST_LINK" ]; then
 fi
 
 # Download the APK file
-wget -qO "$APK_FILE" "$LATEST_LINK"
+wget -qO "$APK_FILE" "$REMOTE_LAST_LINK"
 
 # Check if APK download was successful
 if [ $? -ne 0 ]; then
@@ -101,7 +101,7 @@ create_json
 rm -f "$APK_FILE"
 
 # Save the latest link for future checks
-echo "$LATEST_LINK" > "$LAST_LINK_FILE"
+echo "$REMOTE_LAST_LINK" > "$LAST_LINK_FILE"
 
 # Output the JSON file content
 cat "$LAST_JSON_FILE"

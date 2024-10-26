@@ -2,7 +2,7 @@
 
 [English](./README.md) | [Українська](./README_UK.md) | **Русский**
 
-Облегченный форк [daboynb/playcurl](https://github.com/daboynb/PlayIntegrityNEXT/tree/main/playcurl), который выполняет одну задачу: каждые 25 минут получает* файл pif.json и сравнивает его с вашим текущим файлом `custom.pif.json` или `pif.json`. Если ваш файл отличается или отсутствует, он заменяет его, останавливает службы GMS/Wallet и очищает их кэш. Если файлы идентичны или произошла ошибка (например, нет интернет-соединения или не удалось получить файл), он ничего не делает в этой итерации (попытке). Этот модуль предназначен для использования с модулем [osm0sis/PlayIntegrityFork](https://github.com/osm0sis/PlayIntegrityFork) (по моему предпочтению) или с модулем [chiteroman/PlayIntegrityFix](https://github.com/chiteroman/PlayIntegrityFix).
+Облегченный форк [daboynb/playcurl](https://github.com/daboynb/PlayIntegrityNEXT/tree/main/playcurl), который выполняет одну задачу: каждые 25 минут получает* файл pif.json и сравнивает его с вашим текущим файлом `custom.pif.json` или `pif.json`. Если ваш файл отличается или отсутствует, он заменяет его и останавливает службы DroidGuard и Google Кошелька. Если файлы идентичны или произошла ошибка (например, нет интернет-соединения или не удалось получить файл), он ничего не делает в этой итерации (попытке). Этот модуль предназначен для использования с модулем [osm0sis/PlayIntegrityFork](https://github.com/osm0sis/PlayIntegrityFork) (по моему предпочтению) или с модулем [chiteroman/PlayIntegrityFix](https://github.com/chiteroman/PlayIntegrityFix).
 
 <details>
 <summary>* О получении pif.json</summary>

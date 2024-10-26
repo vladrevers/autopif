@@ -1,5 +1,4 @@
 MODPATH="${0%/*}"
-PIF_FILE_PATH=""
 PIF_MODULE_DIR="/data/adb/modules/playintegrityfix"
 [ "$1" = "-o" ] && ONCE_MODE=1
 
@@ -9,51 +8,42 @@ get_config() {
 }
 
 log() {
+    local log_file_path="/storage/emulated/0/autopif_log.txt"
     if [ $ONCE_MODE ]; then
         echo "$1"
-        return 0
-    fi
-
-    log_file_path="/storage/emulated/0/autopif_log.txt"
-    if [ "$(get_config "logging" "on")" = "on" ] && touch "$log_file_path" 2>/dev/null; then
+    elif [ "$(get_config "logging" "on")" = "on" ] && touch "$log_file_path" 2>/dev/null; then
         echo "$(date "+%Y-%m-%d_%H:%M:%S"): $1" >> "$log_file_path"
     fi
 }
 
 replace_log() {
-    replace_log_file_path="/storage/emulated/0/autopif_replace_log.txt"
+    local replace_log_file_path="/storage/emulated/0/autopif_replace_log.txt"
     if ! ([ "$(get_config "replace_logging" "off")" = "on" ] && touch "$replace_log_file_path" 2>/dev/null); then
-        return 0
+        return
     fi
 
-    echo "$(date "+%Y-%m-%d_%H:%M:%S") $PIF_FILE_PATH" >> "$replace_log_file_path"
-
-    echo "Old:" >> "$replace_log_file_path"
-    cat "$PIF_FILE_PATH" >> "$replace_log_file_path"
-    echo "" >> "$replace_log_file_path"
-    echo "New:" >> "$replace_log_file_path"
-    cat "$remote_pif_file_path" >> "$replace_log_file_path"
-
-    echo "" >> "$replace_log_file_path"
-    echo "" >> "$replace_log_file_path"
+    {
+        echo "$(date "+%Y-%m-%d_%H:%M:%S") $PIF_FILE_PATH"
+        echo "Old:"
+        cat "$PIF_FILE_PATH"
+        echo -e "New:"
+        cat "$remote_pif_file_path"
+        echo -e "\n"
+    } >> "$replace_log_file_path"
 }
 
-set_pif_file_path() {
-    chiteroman_pif_file_path="/data/adb/pif.json"
-    osm0sis_pif_file_path="$PIF_MODULE_DIR/custom.pif.json"
-    module_prop_path="$PIF_MODULE_DIR/module.prop"
+set_pif_json_path() {
+    local chiteroman_path="/data/adb/pif.json"
+    local osm0sis_path="$PIF_MODULE_DIR/custom.pif.json"
+    local module_prop_path="$PIF_MODULE_DIR/module.prop"
 
-    if grep -q 'author=osm0sis' "$module_prop_path" 2>/dev/null; then
-        PIF_FILE_PATH="$osm0sis_pif_file_path"
-    elif grep -q 'author=chiteroman' "$module_prop_path" 2>/dev/null; then
-        PIF_FILE_PATH="$chiteroman_pif_file_path"
-    elif [ -e "$osm0sis_pif_file_path" ]; then
-        PIF_FILE_PATH="$osm0sis_pif_file_path"
-    elif [ -e "$chiteroman_pif_file_path" ]; then
-        PIF_FILE_PATH="$chiteroman_pif_file_path"
+    if [ -e "$osm0sis_path" ] || grep -q 'author=osm0sis' "$module_prop_path" 2>/dev/null; then
+        PIF_FILE_PATH="$osm0sis_path"
+    elif grep -q 'author=chiteroman' "$module_prop_path" 2>/dev/null || [ -e "$chiteroman_path" ]; then
+        PIF_FILE_PATH="$chiteroman_path"
     else
-        PIF_FILE_PATH="$chiteroman_pif_file_path"
-        log "No specific PIF file or author found, using default path."
+        PIF_FILE_PATH="$chiteroman_path"
+        log "No specific PIF file or author found, using default path"
     fi
 
     log "Path to PIF file: $PIF_FILE_PATH"
@@ -65,31 +55,26 @@ check_pif_module_installed() {
         log "Script is terminating due to the missing module"
         exit 1
     fi
+    set_pif_json_path
 }
 
 check_network_reachable() {
-    max_attempts=8
-    success_pinged_series=0
+    local max_attempts=8
+    local success_pinged_series=0
 
     for attempt_count in $(seq 1 $max_attempts); do
         if /system/bin/ping -c1 -W3 "connectivitycheck.gstatic.com" > /dev/null 2>&1; then
             success_pinged_series=$((success_pinged_series + 1))
-            if [ $success_pinged_series -ge 3 ]; then
-                log "Network is reachable."
-                return 0
-            fi
+            [ $success_pinged_series -ge 3 ] && log "Network is reachable" && return 0
         else
             success_pinged_series=0
         fi
 
-        if [ $attempt_count -ge 6 ] && [ $success_pinged_series -eq 0 ]; then
-            break # Early exit after 6 attempts with 0 successes
-        fi
-
+        [ $attempt_count -ge 6 ] && [ $success_pinged_series -eq 0 ] && break
         sleep 0.5
     done
 
-    log "Network is not reachable."
+    log "Network is not reachable"
     return 1
 }
 
@@ -98,12 +83,10 @@ check_network_reachable() {
 update_pif_if_needed() {
     remote_pif_file_path="/data/adb/remote_pif.json"
 
-    if ! load_pif; then
-        return 1
-    fi
+    load_pif || return 1
 
     if grep -q '"FINGERPRINT": "null"' "$remote_pif_file_path" 2>/dev/null; then
-        log "Remote PIF file is bad, skip replace local PIF."
+        log "Remote PIF file is bad, skip replace local PIF"
         rm "$remote_pif_file_path"
         return 0
     fi
@@ -121,46 +104,31 @@ update_pif_if_needed() {
         rm "${remote_pif_file_path}.bak" 2>/dev/null
     fi
 
-    if diff "$remote_pif_file_path" "$PIF_FILE_PATH" > /dev/null 2>&1; then
-        log "The current and remote PIF are the same."
+    if diff -q "$remote_pif_file_path" "$PIF_FILE_PATH" > /dev/null 2>&1; then
+        log "The current and remote PIF are the same"
     else
-        log "Replacing PIF with remote version."
+        log "Replacing PIF with remote version"
         replace_log
         cat "$remote_pif_file_path" > "$PIF_FILE_PATH"
-        handle_gms
+        stop_dg_and_wallet
     fi
 
     rm "$remote_pif_file_path"
 }
 
-handle_gms() {
-    processes="com.google.android.gms com.google.android.gms.unstable com.google.android.apps.walletnfcrel"
-
+stop_dg_and_wallet() {
+    processes="com.google.android.gms.unstable com.google.android.apps.walletnfcrel"
     for process in $processes; do
         pkill -f "$process" > /dev/null 2>&1
         log "Stopped process: $process"
     done
-
-    gms_cache_path="/data/data/com.google.android.gms/cache"
-    walletnfcrel_cache_path="/data/data/com.google.android.apps.walletnfcrel/cache"
-
-    if [ -d "$gms_cache_path" ] && [ "$(ls -A "$gms_cache_path")" ]; then
-        rm -r "$gms_cache_path"/* 2>/dev/null
-        log "Cleared cache: $gms_cache_path"
-    fi
-
-    if [ -d "$walletnfcrel_cache_path" ] && [ "$(ls -A "$walletnfcrel_cache_path")" ]; then
-        rm -r "$walletnfcrel_cache_path"/* 2>/dev/null
-        log "Cleared cache: $walletnfcrel_cache_path"
-    fi
 }
 
 # Check for once start mode
 if [ $ONCE_MODE ]; then
     check_pif_module_installed
-    set_pif_file_path
 
-    log "Start a once check."
+    log "Start a once check"
     check_status="is skipped"
     if check_network_reachable; then
         update_pif_if_needed && check_status="completed"
@@ -194,14 +162,12 @@ if ! [ "$time_interval" -gt 0 ] 2>/dev/null; then
     time_interval=$default_interval
 fi
 
-log "Script started. Checking network and PIF every $time_interval minutes."
-
-set_pif_file_path
+log "Script started. Checking network and PIF every $time_interval minutes"
 
 # Main loop: Check PIF file for updates by time_interval
 while true; do
     log "" # Separator in log
-    log "Start new check."
+    log "Start new check"
     check_status="is skipped"
     if check_network_reachable; then
         update_pif_if_needed && check_status="completed"
