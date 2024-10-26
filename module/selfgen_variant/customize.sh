@@ -1,4 +1,5 @@
 new_module_dir="$MODPATH"
+prev_module_dir=$(echo "$new_module_dir" | sed 's/modules_update/modules/')
 
 # Move the appropriate aapt binary to the target location and set permissions
 if [ -f "$MODPATH/tmp_aapt_binaries/${ARCH}_aapt" ]; then
@@ -9,21 +10,25 @@ else
     abort "Current architecture ($(getprop ro.product.cpu.abi)) is not supported. Installation cannot proceed."
 fi
 
-# Migrate configuration files if an older version exists
-if echo "$new_module_dir" | grep -q "modules_update"; then
-    old_module_dir=$(echo "$new_module_dir" | sed 's/modules_update/modules/')
+# Update config with value
+update_config() {
+    local key=$1
+    local value=$2
+    sed -i "s|^$key=.*|$key=$value|" "$new_module_dir/config.prop"
+}
 
-    if [ -d "$old_module_dir" ]; then
-        if [ -f "$old_module_dir/minutes.txt" ]; then
-            cp -af "$old_module_dir/minutes.txt" "$new_module_dir/minutes.txt"
-        fi
-
-        if [ ! -f "$old_module_dir/log_file_on" ]; then
-            rm -f "$new_module_dir/log_file_on"
-        fi
-
-        if [ -f "$old_module_dir/replace_log_file_on" ]; then
-            touch "$new_module_dir/replace_log_file_on"
-        fi
+if echo "$new_module_dir" | grep -q "modules_update" && [ -d "$prev_module_dir" ]; then
+    ui_print "Migration of the previous configuration:"
+    if [ -f "$prev_module_dir/config.prop" ]; then
+        # Migrate from config.prop
+        while IFS='=' read -r key value; do
+            [ -n "$key" ] && [ "${key#\#}" = "$key" ] && update_config "$key" "$value"
+        done < "$prev_module_dir/config.prop"
+    elif [ "$(grep '^versionCode=' "$prev_module_dir/module.prop" | cut -d'=' -f2)" -lt 1080 ]; then
+        # Migrate from old file-based config
+        [ -f "$prev_module_dir/minutes.txt" ] && update_config "update_interval_minutes" "$(cat "$prev_module_dir/minutes.txt")"
+        [ ! -f "$prev_module_dir/log_file_on" ] && update_config "logging" "off"
+        [ -f "$prev_module_dir/replace_log_file_on" ] && update_config "replace_logging" "on"
     fi
+    ui_print "$(cat "$new_module_dir/config.prop")"
 fi

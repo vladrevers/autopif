@@ -1,0 +1,3 @@
+update_interval_minutes=25
+logging=on
+replace_logging=off

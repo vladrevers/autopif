@@ -3,6 +3,11 @@ PIF_FILE_PATH=""
 PIF_MODULE_DIR="/data/adb/modules/playintegrityfix"
 [ "$1" = "-o" ] && ONCE_MODE=1
 
+get_config() {
+    local value=$(grep "^$1=" "$MODPATH/config.prop" 2>/dev/null | cut -d'=' -f2-)
+    printf '%s\n' "${value:-$2}"
+}
+
 log() {
     if [ $ONCE_MODE ]; then
         echo "$1"
@@ -10,14 +15,14 @@ log() {
     fi
 
     log_file_path="/storage/emulated/0/autopif_log.txt"
-    if [ -f "$MODPATH/log_file_on" ] && touch "$log_file_path" 2>/dev/null; then
+    if [ "$(get_config "logging" "on")" = "on" ] && touch "$log_file_path" 2>/dev/null; then
         echo "$(date "+%Y-%m-%d_%H:%M:%S"): $1" >> "$log_file_path"
     fi
 }
 
 replace_log() {
     replace_log_file_path="/storage/emulated/0/autopif_replace_log.txt"
-    if ! ([ -f "$MODPATH/replace_log_file_on" ] && touch "$replace_log_file_path" 2>/dev/null); then
+    if ! ([ "$(get_config "replace_logging" "off")" = "on" ] && touch "$replace_log_file_path" 2>/dev/null); then
         return 0
     fi
 
@@ -182,10 +187,11 @@ check_pif_module_installed
 
 sleep 10 # Wait for the network connection after reboot
 
-# Get check interval from file with validation
-time_interval=$(cat "$MODPATH/minutes.txt" 2>/dev/null)
+# Get check interval from config with validation
+default_interval=25
+time_interval=$(get_config "update_interval_minutes" $default_interval)
 if ! [ "$time_interval" -gt 0 ] 2>/dev/null; then
-    time_interval=25
+    time_interval=$default_interval
 fi
 
 log "Script started. Checking network and PIF every $time_interval minutes."
