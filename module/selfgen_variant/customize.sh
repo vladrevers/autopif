@@ -29,3 +29,10 @@ if echo "$new_module_dir" | grep -q "modules_update" && [ -d "$prev_module_dir" 
     fi
     ui_print "$(cat "$new_module_dir/config.prop")"
 fi
+
+if [ ! -f "$prev_module_dir/config.prop" ]; then
+    if grep -q "testkey" "/system/etc/security/otacerts.zip" 2>/dev/null; then
+        update_config "turn_spoof_signature" "on"
+        ui_print "The default turn_spoof_signature is set to 'on' as your ROM likely uses a test signature."
+    fi
+fi

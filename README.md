@@ -39,6 +39,7 @@ Within the installed autopif module directory (`/data/adb/modules/autopif`), you
 - `pif_json_url` - direct link for updating the PIF JSON file (default: https://raw.githubusercontent.com/vladrevers/pifsync/main/pif.json)
 - `logging` - enable/disable logging to `/storage/emulated/0/autopif_log.txt` (default: on)
 - `replace_logging` - enable/disable logging of PIF file content replacement (before/after) to `/storage/emulated/0/autopif_replace_log.txt` (default: off)
+- `turn_spoof_signature` - enable/disable signature spoofing in PIF file (default: off, except when your ROM signature is test-keys)
 
 ## Manual Execution
 

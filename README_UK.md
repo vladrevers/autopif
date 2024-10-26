@@ -39,6 +39,7 @@
 - `pif_json_url` - пряме посилання для оновлення PIF JSON файлу (за замовчуванням: https://raw.githubusercontent.com/vladrevers/pifsync/main/pif.json)
 - `logging` - увімкнення/вимкнення логування в `/storage/emulated/0/autopif_log.txt` (за замовчуванням: on)
 - `replace_logging` - увімкнення/вимкнення логування заміни вмісту PIF файлу (до/після) в `/storage/emulated/0/autopif_replace_log.txt` (за замовчуванням: off)
+- `turn_spoof_signature` - увімкнення/вимкнення підміни підпису в PIF файлі (за замовчуванням: off, крім випадку коли підпис вашої прошивки тестовий)
 
 ## Ручний запуск
 

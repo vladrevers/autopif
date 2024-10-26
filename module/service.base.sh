@@ -99,9 +99,21 @@ update_pif_if_needed() {
 
     migrate_script_path="$PIF_MODULE_DIR/migrate.sh"
     if [ -f "$migrate_script_path" ]; then
+        is_osm0sis=1
         log "Running existing migrate.sh to adapt remote PIF"
         sh "$migrate_script_path" "$remote_pif_file_path" "$remote_pif_file_path" > /dev/null 2>&1
         rm "${remote_pif_file_path}.bak" 2>/dev/null
+    fi
+
+    if [ "$(get_config "turn_spoof_signature" "off")" = "on" ]; then
+        if grep -q "spoofSignature" "$remote_pif_file_path"; then
+            sed -i 's/"spoofSignature":\s*"0"/"spoofSignature": "1"/g; s/"spoofSignature":\s*false/"spoofSignature": true/g' "$remote_pif_file_path"
+        elif [ "$is_osm0sis" ]; then
+            sed -i ':a;N;$!ba;s/\n}/,\n\n  \/\/ Advanced Settings\n    "spoofSignature": "1"\n}/' "$remote_pif_file_path"
+        else
+            sed -i ':a;N;$!ba;s/\n}/,\n  "spoofSignature": true\n}/' "$remote_pif_file_path"
+        fi
+        log "spoofSignature added and enabled in PIF"
     fi
 
     if diff -q "$remote_pif_file_path" "$PIF_FILE_PATH" > /dev/null 2>&1; then
