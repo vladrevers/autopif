@@ -26,9 +26,7 @@ The 25-minute interval can be changed, please see the [Preferences](#preferences
 ## Installation
 
 1. If the [osm0sis/PlayIntegrityFork](https://github.com/osm0sis/PlayIntegrityFork/releases/latest) or [chiteroman/PlayIntegrityFix](https://github.com/chiteroman/PlayIntegrityFix/releases/latest) module is not installed yet, install it (no need to reboot your device yet, it will just be faster).
-
 2. Install this [autopif](https://github.com/vladrevers/autopif/releases/latest) module.
-
 3. Reboot your device. If you want to see the results immediately, ensure your internet connection is enabled **before** the reboot.
 
 ## Preferences
@@ -43,13 +41,16 @@ Within the installed autopif module directory (`/data/adb/modules/autopif`), you
 
 ## Manual Execution
 
-You can perform a one-time check manually using the following command in a terminal:
-
+You can perform a one-time check in two ways:
+1. On Magisk v28+:
+   - Open Magisk app → Modules
+   - Click "Action" button next to autopif
+2. Using terminal command:
 ```shell
 cd /data/adb && ./magisk/busybox ash -o standalone ./modules/autopif/service.sh -o
 ```
 
-This command will run the script once, outputting the results to the console. It's useful for quick updating of the current PIF file and for debugging purposes.
+Both methods will run the script once, outputting the results to the console. It's useful for quick updating of the current PIF file and for debugging purposes.
 
 ## Notes
 
