@@ -85,18 +85,6 @@ update_pif_if_needed() {
 
     load_pif || return 1
 
-    if grep -q '"FINGERPRINT": "null"' "$remote_pif_file_path" 2>/dev/null; then
-        log "Remote PIF file is bad, skip replace local PIF"
-        rm "$remote_pif_file_path"
-        return 0
-    fi
-
-    example_pif_file_path="$PIF_MODULE_DIR/example.pif.json"
-    if [ -e "$example_pif_file_path" ]; then
-        rm "$example_pif_file_path"
-        log "Delete example.pif.json"
-    fi
-
     migrate_script_path="$PIF_MODULE_DIR/migrate.sh"
     if [ -f "$migrate_script_path" ]; then
         is_osm0sis=1
