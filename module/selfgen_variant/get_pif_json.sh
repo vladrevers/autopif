@@ -11,12 +11,12 @@ RSS_URL="https://sourceforge.net/projects/xiaomi-eu-multilang-miui-roms/rss?path
 
 # Function to fetch the second link from the RSS feed
 fetch_rss_link() {
-    wget -qO- "$RSS_URL" | awk -v RS='<item>' '/<link>/ {gsub(/.*<link>|<\/link>.*/, ""); link=$0} NR==2 {print link; exit}'
+    wget --no-check-certificate -qO- "$RSS_URL" | awk -v RS='<item>' '/<link>/ {gsub(/.*<link>|<\/link>.*/, ""); link=$0} NR==2 {print link; exit}'
 }
 
 # Extract a value from the APK's aapt output
 get_value() {
-    echo "$aapt_output" | grep -A2 "name=\"$1\"" | grep "value=" | sed 's/.*value="\([^"]*\)".*/\1/' | head -n1
+    echo "$aapt_output" | grep -A2 "^[ ]*A: name=\"$1\"" | grep "value=" | sed 's/.*value="\([^"]*\)".*/\1/' | head -n1
 }
 
 # Extract a part of the fingerprint using the provided index
@@ -26,8 +26,17 @@ extract_fingerprint_part() {
     echo "${part_value:-null}"
 }
 
-create_json() {
+valid_aapt_output() {
+    if [ -z "$(get_value FINGERPRINT)" ]; then
+        echo "Failed to get FINGERPRINT value"
+        rm -rf "$TMP_DIR"/*
+        exit 1
+    fi
+}
+
+create_json_file() {
     aapt_output="$($MODPATH/aapt dump xmltree "$APK_FILE" "res/xml/inject_fields.xml")"
+    valid_aapt_output
     cat <<EOF >"$LAST_JSON_FILE"
 {
   "BRAND": "$(get_value BRAND)",
@@ -42,57 +51,33 @@ create_json() {
 }
 EOF
 
-    # Remove lines containing "null"
     sed -i '/"null"/d' "$LAST_JSON_FILE"
 }
 
-# Initialize or read the last saved link
-if [ -f "$LAST_LINK_FILE" ]; then
-    LOCAL_LAST_LINK=$(cat "$LAST_LINK_FILE")
-else
-    LOCAL_LAST_LINK=""
-fi
 
 # Fetch the latest link from the RSS feed
 REMOTE_LAST_LINK=$(fetch_rss_link)
-
-# Check if RSS link fetch was successful
-if [ $? -ne 0 ]; then
-    echo "Failed to fetch RSS feed. Using the last known link if available."
-    REMOTE_LAST_LINK=$LOCAL_LAST_LINK
-fi
-
-# If the link is still empty, exit with error
-if [ -z "$REMOTE_LAST_LINK" ]; then
-    echo "No valid link found. Exiting with error."
+if [ $? -ne 0 ] || [ -z "$REMOTE_LAST_LINK" ]; then
+    echo "Failed to fetch RSS feed or no valid link found"
     exit 1
 fi
 
 # If the link hasn't changed, return the last saved JSON result
-if [ "$REMOTE_LAST_LINK" = "$LOCAL_LAST_LINK" ]; then
-    if [ -f "$LAST_JSON_FILE" ]; then
+if [ "$REMOTE_LAST_LINK" = "$(cat "$LAST_LINK_FILE" 2>/dev/null)" ]; then
+    if [ -s "$LAST_JSON_FILE" ]; then
         cat "$LAST_JSON_FILE"
         exit 0
     fi
 fi
 
 # Download the APK file
-wget -qO "$APK_FILE" "$REMOTE_LAST_LINK"
-
-# Check if APK download was successful
-if [ $? -ne 0 ]; then
-    echo "Failed to download APK. Returning the last available JSON if exists."
-    if [ -f "$LAST_JSON_FILE" ]; then
-        cat "$LAST_JSON_FILE"
-        exit 0
-    else
-        echo "No JSON file available. Exiting with error."
-        exit 1
-    fi
+wget --no-check-certificate -qO "$APK_FILE" "$REMOTE_LAST_LINK"
+if [ $? -ne 0 ] || [ ! -s "$APK_FILE" ]; then
+    echo "Failed to download APK or APK is empty"
+    exit 1
 fi
 
-# Create the JSON file
-create_json
+create_json_file
 
 # Clean up
 rm -f "$APK_FILE"
