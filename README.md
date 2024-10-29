@@ -16,9 +16,9 @@ Downloads the file from [pifsync/pif.json](https://github.com/vladrevers/pifsync
 
 **Selfgen variant**:  
 Generates the file on the device by downloading and extracting information from the latest [XiaomiEUModule.apk](https://sourceforge.net/projects/xiaomi-eu-multilang-miui-roms/files/xiaomi.eu/Xiaomi.eu-app/) from xiaomi.eu.
-- **Plus**: Always has the latest pif.json available.
+- **Plus**: The new pif.json is available without delay.
 - **Minus**: Uses slightly more network data and requires the aapt binary library, increasing the installed module size by 1.4MB.
-- **Feature**: Caches the last pif.json and apk link, so downloading and extracting information from the apk only occurs when necessary (upon update).
+- **Optimization**: Caches the last pif.json and apk link, so downloading and extracting information from the apk only occurs when necessary (upon update).
 </details>
 
 The 25-minute interval can be changed, please see the [Preferences](#preferences) and [Notes](#notes) sections.
@@ -37,7 +37,7 @@ Within the installed autopif module directory (`/data/adb/modules/autopif`), you
 - `pif_json_url` - direct link for updating the PIF JSON file (default: https://raw.githubusercontent.com/vladrevers/pifsync/main/pif.json)
 - `logging` - enable/disable logging to `/storage/emulated/0/autopif_log.txt` (default: on)
 - `replace_logging` - enable/disable logging of PIF file content replacement (before/after) to `/storage/emulated/0/autopif_replace_log.txt` (default: off)
-- `turn_spoof_signature` - enable/disable signature spoofing in PIF file (default: off, except when your ROM signature is test-keys)
+- `turn_spoof_signature` - enable/disable adding the signature spoofing parameter in the PIF file (default: off, except when your ROM signature is test-keys)
 
 ## Manual Execution
 

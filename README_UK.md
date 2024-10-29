@@ -2,7 +2,7 @@
 
 [English](./README.md) | **Українська** | [Русский](./README_RU.md)
 
-Полегшений форк [daboynb/playcurl](https://github.com/daboynb/PlayIntegrityNEXT/tree/main/playcurl), який виконує одну задачу: кожні 25 хвилин отримує* файл pif.json і порівнює його з вашим поточним файлом `custom.pif.json` або `pif.json`. Якщо ваш файл відрізняється або відсутній, він замінює його і зупиняє служби DroidGuard та Google Гаманця. Якщо файли ідентичні або сталася помилка (наприклад, немає інтернет-з'єднання або не вдалося отримати файл), він нічого не робить у цій ітерації (спробі). Цей модуль призначений для використання з модулем [osm0sis/PlayIntegrityFork](https://github.com/osm0sis/PlayIntegrityFork) (за моїм уподобанням) або з модулем [chiteroman/PlayIntegrityFix](https://github.com/chiteroman/PlayIntegrityFix).
+Полегшений форк [daboynb/playcurl](https://github.com/daboynb/PlayIntegrityNEXT/tree/main/playcurl), який виконує одну задачу: кожні 25 хвилин отримує* файл pif.json і порівнює його з вашим поточним файлом `custom.pif.json` або `pif.json`. Якщо ваш файл відрізняється або відсутній, він замінює його і зупиняє сервіси DroidGuard та Google Гаманця. Якщо файли ідентичні або сталася помилка (наприклад, немає інтернет-з'єднання або не вдалося отримати файл), він нічого не робить у цій ітерації (спробі). Цей модуль призначений для використання з модулем [osm0sis/PlayIntegrityFork](https://github.com/osm0sis/PlayIntegrityFork) (за моїм уподобанням) або з модулем [chiteroman/PlayIntegrityFix](https://github.com/chiteroman/PlayIntegrityFix).
 
 <details>
 <summary>* Про отримання pif.json</summary>
@@ -16,9 +16,9 @@
 
 **Варіант selfgen**:  
 Генерує файл на пристрої, завантажуючи та витягуючи інформацію з останнього [XiaomiEUModule.apk](https://sourceforge.net/projects/xiaomi-eu-multilang-miui-roms/files/xiaomi.eu/Xiaomi.eu-app/) від xiaomi.eu.
-- **Плюс**: Завжди має доступ до найновішого pif.json.
+- **Плюс**: Новий pif.json доступний без затримки.
 - **Мінус**: Використовує трохи більше мережевого трафіку і потребує бінарної бібліотеки aapt, що збільшує розмір встановленого модуля на 1,4 МБ.
-- **Особливість**: Кешує останній pif.json та посилання на apk, тому завантаження та витягування інформації з apk відбувається лише за необхідності (при оновленні).
+- **Оптимізація**: Кешує останній pif.json та посилання на apk, тому завантаження та витягування інформації з apk відбувається лише за необхідності (при оновленні).
 </details>
 
 Інтервал в 25 хвилин можна змінити, будь ласка, дивіться в розділах [Налаштування](#Налаштування) і [Примітка](#Примітка).
@@ -37,7 +37,7 @@
 - `pif_json_url` - пряме посилання для оновлення PIF JSON файлу (за замовчуванням: https://raw.githubusercontent.com/vladrevers/pifsync/main/pif.json)
 - `logging` - увімкнення/вимкнення логування в `/storage/emulated/0/autopif_log.txt` (за замовчуванням: on)
 - `replace_logging` - увімкнення/вимкнення логування заміни вмісту PIF файлу (до/після) в `/storage/emulated/0/autopif_replace_log.txt` (за замовчуванням: off)
-- `turn_spoof_signature` - увімкнення/вимкнення підміни підпису в PIF файлі (за замовчуванням: off, крім випадку коли підпис вашої прошивки тестовий)
+- `turn_spoof_signature` - увімкнення/вимкнення додавання параметра підміни підпису в PIF файлі (за замовчуванням: off, крім випадку коли підпис вашої прошивки тестовий)
 
 ## Ручний запуск
 
