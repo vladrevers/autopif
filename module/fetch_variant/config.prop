@@ -3,3 +3,4 @@ pif_json_url=https://raw.githubusercontent.com/vladrevers/pifsync/main/pif.json
 logging=on
 replace_logging=off
 turn_spoof_signature=off
+turn_spoof_vendingSDK=off

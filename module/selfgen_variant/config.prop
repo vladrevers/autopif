@@ -2,3 +2,4 @@ update_interval_minutes=25
 logging=on
 replace_logging=off
 turn_spoof_signature=off
+turn_spoof_vendingSDK=off

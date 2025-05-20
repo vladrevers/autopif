@@ -31,3 +31,10 @@ if [ ! -f "$prev_module_dir/config.prop" ]; then
         ui_print "The default turn_spoof_signature is set to 'on' as your ROM likely uses a test signature."
     fi
 fi
+
+if [ ! -f "$prev_module_dir/config.prop" ] || ! grep -q "^turn_spoof_vendingSDK=" "$prev_module_dir/config.prop"; then
+    if [ "$(getprop ro.build.version.sdk)" -ge 33 ]; then
+        update_config "turn_spoof_vendingSDK" "on"
+        ui_print "The default turn_spoof_vendingSDK is set to 'on' as you are running Android 13 or higher."
+    fi
+fi

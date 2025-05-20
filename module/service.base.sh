@@ -104,6 +104,17 @@ update_pif_if_needed() {
         log "spoofSignature added and enabled in PIF"
     fi
 
+    if [ "$(get_config "turn_spoof_vendingSDK" "off")" = "on" ]; then
+        if grep -q "spoofVendingSdk" "$remote_pif_file_path"; then
+            sed -i 's/"spoofVendingSdk":\s*"0"/"spoofVendingSdk": "1"/g' "$remote_pif_file_path"
+        elif [ "$is_osm0sis" ] && ! grep -q "// Advanced Settings" "$remote_pif_file_path"; then
+            sed -i ':a;N;$!ba;s/\n}/,\n\n  \/\/ Advanced Settings\n    "spoofVendingSdk": "1"\n}/' "$remote_pif_file_path"
+        else
+            sed -i ':a;N;$!ba;s/\n}/,\n  "spoofVendingSdk": "1"\n}/' "$remote_pif_file_path"
+        fi
+        log "spoofVendingSdk added and enabled in PIF"
+    fi
+
     if diff -q "$remote_pif_file_path" "$PIF_FILE_PATH" > /dev/null 2>&1; then
         log "The current and remote PIF are the same"
     else
@@ -122,6 +133,11 @@ stop_dg_and_wallet() {
         pkill -f "$process" > /dev/null 2>&1
         log "Stopped process: $process"
     done
+
+    if [ "$(get_config "turn_spoof_vendingSDK" "off")" = "on" ]; then
+        pkill -f "com.android.vending" > /dev/null 2>&1
+        log "Stopped process: $vending_process"
+    fi
 }
 
 # Check for once start mode
