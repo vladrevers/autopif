@@ -1,3 +1,7 @@
+## [1.9.0] - 2025-05-20
+- Added `turn_spoof_vendingSDK` option to activate the `spoofVendingSdk` parameter in the PIF file
+- **Note**: This option is enabled by default for Android 13+ (only during first installation or when updating from version 1.8.1 and older). It helps bypass Play Integrity changes where, since May 2025, devices with unlocked bootloaders on Android 13+ cannot pass MEETS_DEVICE_INTEGRITY. Be aware that this feature may cause issues with the Play Store (navigation degradation or crashes during app installation/updates).
+
 ## [1.8.1] - 2024-10-27
 - **selfgen variant**: fixed issue with ignoring failures when calling `get_pif_json.sh` and enhanced error checks within the script
 - Removed unnecessary code

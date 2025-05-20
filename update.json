@@ -1,6 +1,6 @@
 {
-    "version": "v1.8.1",
-    "versionCode": 1081,
-    "zipUrl": "https://github.com/vladrevers/autopif/releases/download/v1.8.1/autopif-fetch_v1.8.1.zip",
+    "version": "v1.9",
+    "versionCode": 1090,
+    "zipUrl": "https://github.com/vladrevers/autopif/releases/download/v1.9/autopif-fetch_v1.9.zip",
     "changelog": "https://raw.githubusercontent.com/vladrevers/autopif/main/CHANGELOG.md"
 }
