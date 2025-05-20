@@ -12,9 +12,9 @@ if echo "$new_module_dir" | grep -q "modules_update" && [ -d "$prev_module_dir" 
     ui_print "Migration of the previous configuration:"
     if [ -f "$prev_module_dir/config.prop" ]; then
         # Migrate from config.prop
-        while IFS='=' read -r key value; do
+        (cat "$prev_module_dir/config.prop"; echo) | while IFS='=' read -r key value; do
             [ -n "$key" ] && [ "${key#\#}" = "$key" ] && update_config "$key" "$value"
-        done < "$prev_module_dir/config.prop"
+        done
     elif [ "$(grep '^versionCode=' "$prev_module_dir/module.prop" | cut -d'=' -f2)" -lt 1080 ]; then
         # Migrate from old file-based config
         [ -f "$prev_module_dir/minutes.txt" ] && update_config "update_interval_minutes" "$(cat "$prev_module_dir/minutes.txt")"
