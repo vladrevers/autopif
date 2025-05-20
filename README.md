@@ -38,7 +38,7 @@ Within the installed autopif module directory (`/data/adb/modules/autopif`), you
 - `logging` - enable/disable logging to `/storage/emulated/0/autopif_log.txt` (default: on)
 - `replace_logging` - enable/disable logging of PIF file content replacement (before/after) to `/storage/emulated/0/autopif_replace_log.txt` (default: off)
 - `turn_spoof_signature` - enable/disable adding the signature spoofing parameter in the PIF file (default: off, except when your ROM signature is test-keys)
-- `turn_spoof_vendingSDK` - enable/disable adding the vendingSDK spoofing parameter in the PIF file (default: on for Android 13+ and off for older versions)
+- `turn_spoof_vendingSDK` - enable/disable adding the vendingSDK spoofing parameter in the PIF file (default: on for Android 13+ and off for older versions). May cause issues with Play Store, see details in [release notes](https://github.com/vladrevers/autopif/releases/tag/v1.9)
 
 ## Manual Execution
 

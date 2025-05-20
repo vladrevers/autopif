@@ -38,7 +38,7 @@
 - `logging` - включение/выключение логирования в `/storage/emulated/0/autopif_log.txt` (по умолчанию: on)
 - `replace_logging` - включение/выключение логирования замены содержимого PIF файла (до/после) в `/storage/emulated/0/autopif_replace_log.txt` (по умолчанию: off)
 - `turn_spoof_signature` - включение/выключение добавления параметра подмены подписи в PIF файле (по умолчанию: off, кроме случая когда подпись вашей прошивки тестовая)
-- `turn_spoof_vendingSDK` - включение/выключение добавления параметра подмены vendingSDK в PIF файле (по умолчанию: on для Android 13+ и off для более старых версий)
+- `turn_spoof_vendingSDK` - включение/выключение добавления параметра подмены vendingSDK в PIF файле (по умолчанию: on для Android 13+ и off для более старых версий). Может вызывать проблемы в Play Store, подробности в [примечаниях к релизу](https://github.com/vladrevers/autopif/releases/tag/v1.9)
 
 ## Ручной запуск
 
