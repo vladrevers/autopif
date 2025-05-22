@@ -136,7 +136,7 @@ stop_dg_and_wallet() {
 
     if [ "$(get_config "turn_spoof_vendingSDK" "off")" = "on" ]; then
         pkill -f "com.android.vending" > /dev/null 2>&1
-        log "Stopped process: $vending_process"
+        log "Stopped vending process"
     fi
 }
 
